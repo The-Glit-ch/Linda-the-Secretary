@@ -18,7 +18,7 @@ bot.remove_command('help')
 #VARS
 global Lockdown
 global voice
-TOKEN = "Nzc3MzgyODY4NjQ0MTM0OTEy.X7CoNg.-W0X-ChUvf1xoC2SNLxYZPh4Lyk"
+TOKEN = "TOKEN"
 voice = None
 Lockdown = False
 
