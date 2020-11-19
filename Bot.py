@@ -1,26 +1,24 @@
-import discord
-import asyncio
-import os
-import random
-import youtube_dl
-import shutil
-import praw
+#import asyncio
+#import os
+#import random
+#import youtube_dl
+#import shutil
+#import praw
+import discord, asyncio, os, random, youtube_dl, shutil, praw
 from os import system
-from discord.ext import commands
+from discord import Spotify, Member
 from discord.utils import get
-from discord import Spotify
-from discord.ext.commands.errors import MissingPermissions, MissingRequiredArgument
+from discord.ext import commands
 from discord.ext.commands import has_permissions
+from discord.ext.commands.errors import MissingPermissions, MissingRequiredArgument
 
 bot = commands.Bot(command_prefix='Linda ')
 bot.remove_command('help')
 
 #VARS
-global Lockdown
 global voice
-TOKEN = "TOKEN"
+TOKEN = "Nzc3MzgyODY4NjQ0MTM0OTEy.X7CoNg.-W0X-ChUvf1xoC2SNLxYZPh4Lyk"
 voice = None
-Lockdown = False
 
 Whitelist = [557339295325880320,762844152429412402]
 Sus = [729169434278625330]
@@ -37,6 +35,11 @@ async def on_ready():
     print ("------------------------------------")
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening ,name="something"))
 
+
+#@bot.event
+#async def on_member_join(member):
+    #role = get(member.guild.roles, name="Unverified member")
+    #await member.add_roles(role)
 #
 #Event Spacer^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 #Event Spacer
@@ -189,7 +192,7 @@ async def browse_reddit(ctx, sub):
 @bot.command()
 async def kill(ctx,user:discord.Member):
     Author = ctx.author
-    Death = [f"{user} died to fall damage",f"{user} dies from seeing {Author}'s face",f"{user} had enough of this world and just dies",f"{user} fucked a monkey and died of aids",f"{user} had a stroke from reading {Author}'s dm",f"{user} died from jacking off too {Author} 50 times in a row",f"{user}'s mom caught them watching gay no-no video",f"{Author} kamakazied {user}",f"{user} got killed by {Author}'s thicc thighs",f""]
+    Death = [f"{user} died to fall damage",f"{user} dies from seeing {Author}'s face",f"{user} had enough of this world and just dies",f"{user} fucked a monkey and died of aids",f"{user} had a stroke from reading {Author}'s dm",f"{user} died from jacking off too {Author} 50 times in a row",f"{user}'s mom caught them watching gay no-no video",f"{Author} kamakazied {user}",f"{user} got killed by {Author}'s thicc thighs",f"{user} got raided by the FBI because they searched up loli hentai",f"{user} got bonked to hard with the horny stick",f"{user} got killed by a sweaty {Author}"]
     try:
         await ctx.send(Death[random.randint(0,len(Death))])
     except:
@@ -216,7 +219,7 @@ async def help(ctx):
         ``Linda browse_reddit <subreddit>`` Browse reddit(NSFW Posts will be messaged to you) **(Aliases=``reddit``,``br``)**\n
         ``Linda kill <user>`` Either the specified user dies, you die, or you both die ¯\_(ツ)_/¯ **(Aliases=None)**\n
         ``Linda help`` Do I really have to explain this **(Aliases=``h``,``Help``)**\n
-        ``Linda profile <user>`` Get info on a user's profile **(Aliases=None)**
+        ``Linda profile <user>`` Get info on a user's profile **(Aliases=``Info``)**\n
 
     **VC Commands:**
 
@@ -234,9 +237,10 @@ async def help(ctx):
     await ctx.send("Now sending you a dm")
     await ctx.author.send(embed=Embed)
 
-@bot.command()
+@bot.command(aliases=['info'])
 async def profile(ctx,user:discord.Member):
-    Embed = discord.Embed(title=f"{user} user info",description=f"Profile Info:\nUser Nick: **{user.nick}**\nUser Join Date: **{user.joined_at}**\nUser Nitro Since: **{user.premium_since}**\nUser Status: {user.activity}\nUser profile picture {user.avatar_url}\n",color=discord.Color.gold()).set_image(url=user.avatar_url)
+    print(f"Getting user info from {user}, requested by {ctx.author}")
+    Embed = discord.Embed(title=f"{user} user info",description=f"Profile Info:\nUser Nick: **{user.nick}**\nUser Join Date: **{user.joined_at}**\nUser Nitro Since: **{user.premium_since}**\nUser profile picture: {user.avatar_url}\n",color=discord.Color.gold()).set_image(url=user.avatar_url)
     await ctx.send(embed=Embed)
 
 #VC Cmds
@@ -339,7 +343,7 @@ async def play(ctx, *url:str):
         print("No queue folder found")
     
     print("Getting ready to dowload the song")
-    await ctx.send("Now downloading your selected song. Please be patient it might take a while")
+    await ctx.send("Now downloading your selected song. Please be patient it might take a while(Especially with spotify songs)")
 
     ydl_opts = {
         "format":"bestaudio/best",
