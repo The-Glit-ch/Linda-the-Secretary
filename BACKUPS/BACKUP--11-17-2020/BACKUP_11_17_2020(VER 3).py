@@ -419,7 +419,7 @@ async def Tired(ctx):
     T = random.randint(0,100)
     print(f"Random number choosen {T}")
     if T <= 5:
-        await ctx.send("Gosh im tired, I could use some coffee right now",file=discord.File("C:\\Users\\Admin\\OneDrive\\Documentos\\CODE and STUFF\\MAIN_CODE\\EverythingPython\Discord_Bots\\Matt's Secretary\\Tired.png"))
+        await ctx.send("Gosh im tired, I could use some coffee right now",file=discord.File("File_path"))
 
 #
 #FUNCTION Spacer^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
