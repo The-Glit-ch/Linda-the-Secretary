@@ -499,4 +499,4 @@ async def Tired(ctx):
 #
 
 
-bot.run('Nzc3MzgyODY4NjQ0MTM0OTEy.X7CoNg.em2OXNRwe3i9aIHrgNYo_ltu9Hs')
+bot.run(TOKEM)
