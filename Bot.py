@@ -4,7 +4,7 @@
 #import youtube_dl
 #import shutil
 #import praw
-import discord, asyncio, os, random, youtube_dl, shutil, praw
+import discord, asyncio, os, random, youtube_dl, shutil, praw, time
 from os import system
 from discord import Spotify, Member
 from discord.utils import get
@@ -13,19 +13,25 @@ from discord.ext.commands import has_permissions
 from discord.ext.commands.errors import MissingPermissions, MissingRequiredArgument
 
 bot = commands.Bot(command_prefix='Linda ')
+Pre = "Linda"
 bot.remove_command('help')
+
+#Tokens
+TOKEN = "Nzc3MzgyODY4NjQ0MTM0OTEy.X7CoNg.-W0X-ChUvf1xoC2SNLxYZPh4Lyk"
+RedditAPI = {
+    "client_id":"ngA9KAClS8VuIw",
+    "client_secret":"e9w_d3QLPXyxYOqlO3mqsnlyGtZ5uw",
+    "password":"amapola13", 
+    "user_agent":"Linda",
+    "username":"Glith_ches",
+}
 
 #VARS
 global voice
 voice = None
 
-TOKEN = "Ha no"
 Whitelist = [557339295325880320,762844152429412402]
 ActList = ["competing","custom","listening","mro","playing","streaming","unknown","watching"]
-RedditAPI = {
-    "Ha no",
-}
-
 #VARS
 
 @bot.event
@@ -207,6 +213,7 @@ async def help(ctx):
         ``Linda kill <user>`` Either the specified user dies, you die, or you both die ¯\_(ツ)_/¯ **(Aliases=None)**\n
         ``Linda help`` Do I really have to explain this **(Aliases=``h``,``Help``)**\n
         ``Linda profile <user>`` Get info on a user's profile **(Aliases=``Info``)**\n
+        ``Linda repeat <msg>`` Linda says what you said(Thats what she said) **(Aliases=``say``)**\n
 
     **VC Commands:**
 
@@ -229,6 +236,16 @@ async def profile(ctx,user:discord.Member):
     print(f"Getting user info from {user}, requested by {ctx.author}")
     Embed = discord.Embed(title=f"{user} user info",description=f"Profile Info:\nUser Nick: **{user.nick}**\nUser Join Date: **{user.joined_at}**\nUser Nitro Since: **{user.premium_since}**\nUser profile picture: {user.avatar_url}\n",color=discord.Color.gold()).set_image(url=user.avatar_url)
     await ctx.send(embed=Embed)
+
+@bot.command(aliases=['say'])
+async def repeat(ctx, msg:str):
+    Fmsg = str(ctx.message.content).replace(f"{Pre} repeat","").replace(f"{Pre} say","").lower()
+    #FunnyWords = ["stupid","gay","dumb"]
+    if "stupid" in Fmsg:
+        await ctx.send("We know")
+    else:
+        await ctx.send(Fmsg)
+        await ctx.message.delete()
 
 #VC Cmds
 @bot.command(aliases=['join'])
@@ -266,6 +283,7 @@ async def disconnect(ctx):
 #TODO FIX THE QUEUE
 @bot.command(aliases=['p','vibe','pl'])
 async def play(ctx, *url:str):
+    Timer = time.time()
     await Tired(ctx=ctx)
     JoinedURL = ' '.join(url)
     voice = get(bot.voice_clients, guild=ctx.guild)
@@ -321,6 +339,7 @@ async def play(ctx, *url:str):
 
     Emoji = discord.utils.get(bot.emojis,name="xar")
     Embed = discord.Embed(title="Now Playing", description=f"{str(Emoji)} **{JoinedURL}** {str(Emoji)}",color=discord.Color.green())
+    print(f"Song download took {time.time() - Timer}")
     await ctx.send(embed=Embed)
 
 @bot.command()
@@ -409,7 +428,6 @@ def collapse():
     #             print("User didnt give an actual url")
     #             await ctx.send(f"Give me an actuall youtube or spotify url please and not '**{url}**' <@{ctx.author.id}>")
     pass
-
 #VC Cmds   
 
 #
