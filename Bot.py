@@ -19,11 +19,11 @@ bot.remove_command('help')
 global voice
 voice = None
 
-TOKEN = "nah"
+TOKEN = "Ha no"
 Whitelist = [557339295325880320,762844152429412402]
 ActList = ["competing","custom","listening","mro","playing","streaming","unknown","watching"]
 RedditAPI = {
-    "ha no",
+    "Ha no",
 }
 
 #VARS
