@@ -19,15 +19,11 @@ bot.remove_command('help')
 global voice
 voice = None
 
-TOKEN = "Nzc5MDYxNDc3MDAwMzQ3NzE5.X7bDig.EVV9OEk_F-0gKCtdXair31kQ2O0"
+TOKEN = "nah"
 Whitelist = [557339295325880320,762844152429412402]
 ActList = ["competing","custom","listening","mro","playing","streaming","unknown","watching"]
 RedditAPI = {
-    "client_id":"ngA9KAClS8VuIw",
-    "client_secret":"e9w_d3QLPXyxYOqlO3mqsnlyGtZ5uw",
-    "password":"amapola13", 
-    "user_agent":"Linda",
-    "username":"Glith_ches",
+    "ha no",
 }
 
 #VARS
