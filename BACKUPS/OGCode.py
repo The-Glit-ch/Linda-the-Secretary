@@ -136,7 +136,7 @@ async def clear_history(ctx):
 @bot.command()
 async def meme(ctx):
     Temp = MEMENames[random.randint(0,len(MEMENames))]
-    await ctx.send(file=discord.File(f"C:\\Users\\Admin\\OneDrive\\Documentos\\CODE and STUFF\\MAIN_CODE\\EverythingPython\\Discord_Bots\\Matt's Secretary\\Memes\\{Temp}.png"))
+    await ctx.send(file=discord.File(f"FILE_PATH"))
 
 @bot.command()
 async def die(ctx):

@@ -172,9 +172,9 @@ async def clear_history(ctx):
 async def browse_reddit(ctx, sub):
     try:
         await Tired(ctx=ctx)
-        reddit = praw.Reddit(client_id="ngA9KAClS8VuIw", client_secret="e9w_d3QLPXyxYOqlO3mqsnlyGtZ5uw",
-                            password="amapola13", user_agent="Linda",
-                            username="Glith_ches")
+        reddit = praw.Reddit(client_id="client_id", client_secret="client_secret",
+                            password="password", user_agent="user_agent",
+                            username="username")
             
         Sub = reddit.subreddit(sub)
         submission = Sub.random()
