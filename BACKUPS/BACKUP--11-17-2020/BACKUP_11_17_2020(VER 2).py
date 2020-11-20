@@ -140,9 +140,9 @@ async def clear_history(ctx):
 async def browse_reddit(ctx, sub):
     try:
         await Tired(ctx=ctx)
-        reddit = praw.Reddit(client_id="client_id", client_secret="client_secret",
-                            password="password", user_agent="user_agent",
-                            username="username")
+        reddit = praw.Reddit(client_id="Ha no", client_secret="Ha no",
+                            password="Ha no", user_agent="Ha no",
+                            username="Ha no")
             
         Sub = reddit.subreddit(str(sub).replace("/",""))
         submission = Sub.random()
@@ -419,7 +419,7 @@ async def Tired(ctx):
     T = random.randint(0,100)
     print(f"Random number choosen {T}")
     if T <= 5:
-        await ctx.send("Gosh im tired, I could use some coffee right now",file=discord.File("FILE_PATH"))
+        await ctx.send("Gosh im tired, I could use some coffee right now",file=discord.File("Ha no"))
 
 #
 #FUNCTION Spacer^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -429,4 +429,4 @@ async def Tired(ctx):
 #
 
 
-bot.run(TOKEN)
+bot.run("Ha no")

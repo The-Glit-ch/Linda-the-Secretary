@@ -18,7 +18,7 @@ bot.remove_command('help')
 #VARS
 global Lockdown
 global voice
-TOKEN = ""
+TOKEN = "Ha no"
 voice = None
 Lockdown = False
 
@@ -172,9 +172,9 @@ async def clear_history(ctx):
 async def browse_reddit(ctx, sub):
     try:
         await Tired(ctx=ctx)
-        reddit = praw.Reddit(client_id="client_id", client_secret="client_secret",
-                            password="password", user_agent="user_agent",
-                            username="username")
+        reddit = praw.Reddit(client_id="Ha no", client_secret="Ha no",
+                            password="Ha no", user_agent="Ha no",
+                            username="Ha no")
             
         Sub = reddit.subreddit(sub)
         submission = Sub.random()

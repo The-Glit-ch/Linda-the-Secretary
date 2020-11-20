@@ -17,7 +17,7 @@ bot.remove_command('help')
 
 #VARS
 global voice
-TOKEN = ""
+TOKEN = "Ha no"
 voice = None
 
 Whitelist = [557339295325880320,762844152429412402]
@@ -170,9 +170,9 @@ async def clear_history(ctx):
 async def browse_reddit(ctx, sub):
     try:
         await Tired(ctx=ctx)
-        reddit = praw.Reddit(client_id="", client_secret="",
-                            password="", user_agent="",
-                            username="")
+        reddit = praw.Reddit(client_id="Ha no", client_secret="Ha no",
+                            password="Ha no", user_agent="Ha no",
+                            username="Ha no")
             
         Sub = reddit.subreddit(sub)
         submission = Sub.random()

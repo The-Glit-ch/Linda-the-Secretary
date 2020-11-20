@@ -20,7 +20,6 @@ Lockdown = False
 
 Whitelist = [557339295325880320,762844152429412402]
 Sus = [729169434278625330,773729542577717299,761762508268503081,763097081015042129]
-NoNo = ["pls trap","pls porn","pls boobs","pls porn gif"]
 MEMENames = ["1","2","3","4","5","6","7","8"]
 Queues = []
 #-----------ActList = ["competing","custom","listening","mro","playing","streaming","unknown","watching"]
@@ -141,7 +140,7 @@ async def clear_history(ctx):
 async def meme(ctx):
     await Tired(ctx=ctx)
     Temp = MEMENames[random.randint(0,len(MEMENames))]
-    await ctx.send(file=discord.File(f"FILE_PATH"))
+    await ctx.send(file=discord.File(f"Ha no"))
 
 @bot.command()
 async def die(ctx):
@@ -388,7 +387,7 @@ async def Tired(ctx):
     T = random.randint(0,100)
     print(f"Random number choosen {T}")
     if T <= 5:
-        await ctx.send("Gosh im tired, I could use some coffee right now",file=discord.File("FILE_PATH"))
+        await ctx.send("Gosh im tired, I could use some coffee right now",file=discord.File("Ha no"))
 
 #
 #FUNCTION Spacer^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -398,4 +397,4 @@ async def Tired(ctx):
 #
 
 
-bot.run(TOKEN)
+bot.run("Ha no")
