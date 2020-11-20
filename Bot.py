@@ -12,7 +12,7 @@ from discord.ext import commands
 from discord.ext.commands import has_permissions
 from discord.ext.commands.errors import MissingPermissions, MissingRequiredArgument
 
-bot = commands.Bot(command_prefix='Beta Linda ')
+bot = commands.Bot(command_prefix='Linda ')
 bot.remove_command('help')
 
 #VARS
