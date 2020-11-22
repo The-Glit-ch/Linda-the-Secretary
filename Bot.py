@@ -5,7 +5,9 @@
 #import shutil
 #import praw
 import discord, asyncio, os, random, youtube_dl, shutil, praw, time
+from mee6_py_api import API
 from os import system
+from mutagen.mp3 import MP3
 from discord import Spotify, Member
 from discord.utils import get
 from discord.ext import commands
@@ -17,10 +19,15 @@ Pre = "Linda"
 bot.remove_command('help')
 
 #Tokens
-TOKEN = "Ha no"
+TOKEN = "Nzc3MzgyODY4NjQ0MTM0OTEy.X7CoNg.-W0X-ChUvf1xoC2SNLxYZPh4Lyk"
 RedditAPI = {
-    "Ha no",
+    "client_id":"ngA9KAClS8VuIw",
+    "client_secret":"e9w_d3QLPXyxYOqlO3mqsnlyGtZ5uw",
+    "password":"amapola13", 
+    "user_agent":"Linda",
+    "username":"Glith_ches",
 }
+
 
 #VARS
 global voice
@@ -165,18 +172,18 @@ async def browse_reddit(ctx, sub):
     print(reddit.user.me())        
     Sub = reddit.subreddit(sub)
     submission = Sub.random()
-    if submission.over_18 is True:
-        print("Post marked NSFW, now dm-ing")
-        print(f"Reddit Post Data:\nTitle:{submission.title}\nAuthor:{submission.author}\nSub:{sub}\nNSFW:{submission.over_18}\nScore:{submission.score}\nURL:{submission.url}\nUser:{ctx.author}\n")
-        Embed = discord.Embed(title=f"**{submission.title}**\nFrom: **{submission.author}** in: **{sub}**",description=f"Current score of {submission.score}. Look at the post here {submission.url}", color= discord.Color.red()).set_image(url=submission.url)
-        await ctx.author.send(embed=Embed)
-    else:
-        print(f"Reddit Post Data:\nTitle:{submission.title}\nAuthor:{submission.author}\nSub:{sub}\nNSFW:{submission.over_18}\nScore:{submission.score}\nURL:{submission.url}\nUser:{ctx.author}\n")
-        Embed = discord.Embed(title=f"**{submission.title}**\nFrom: **{submission.author}** in: **{sub}**",description=f"Current score of {submission.score}. Look at the post here {submission.url}", color= discord.Color.red()).set_image(url=submission.url)
-        await ctx.send(embed=Embed)
-
-    #except:
-      # await ctx.send("You must specify a **REAL** subreddit and make sure its written **CORRECTLY**(Ex: ``Linda browse_reddit ProgrammerHumor`` **OR** ``Linda reddit ProgrammerHumor``)")
+    try:
+        if submission.over_18 is True:
+            print("Post marked NSFW, now dm-ing")
+            print(f"Reddit Post Data:\nTitle:{submission.title}\nAuthor:{submission.author}\nSub:{sub}\nNSFW:{submission.over_18}\nScore:{submission.score}\nURL:{submission.url}\nUser:{ctx.author}\n")
+            Embed = discord.Embed(title=f"**{submission.title}**\nFrom: **{submission.author}** in: **{sub}**",description=f"Current score of {submission.score}. Look at the post here {submission.url}", color= discord.Color.red()).set_image(url=submission.url)
+            await ctx.author.send(embed=Embed)
+        else:
+            print(f"Reddit Post Data:\nTitle:{submission.title}\nAuthor:{submission.author}\nSub:{sub}\nNSFW:{submission.over_18}\nScore:{submission.score}\nURL:{submission.url}\nUser:{ctx.author}\n")
+            Embed = discord.Embed(title=f"**{submission.title}**\nFrom: **{submission.author}** in: **{sub}**",description=f"Current score of {submission.score}. Look at the post here {submission.url}", color= discord.Color.red()).set_image(url=submission.url)
+            await ctx.send(embed=Embed)
+    except:
+      await ctx.send("You must specify a **REAL** subreddit and make sure its written **CORRECTLY**(Ex: ``Linda browse_reddit ProgrammerHumor`` **OR** ``Linda reddit ProgrammerHumor``)")
     
 @bot.command()
 async def kill(ctx,user:discord.Member):
@@ -230,18 +237,26 @@ async def help(ctx):
 @bot.command(aliases=['info'])
 async def profile(ctx,user:discord.Member):
     print(f"Getting user info from {user}, requested by {ctx.author}")
-    Embed = discord.Embed(title=f"{user} user info",description=f"Profile Info:\nUser Nick: **{user.nick}**\nUser Join Date: **{user.joined_at}**\nUser Nitro Since: **{user.premium_since}**\nUser profile picture: {user.avatar_url}\n",color=discord.Color.gold()).set_image(url=user.avatar_url)
+    mee6API = API(ctx.message.guild.id)
+    Details = await mee6API.levels.get_user_details(user.mention.replace("<@","").replace(">",""))
+    LVL = dict(Details).get("level")
+    XP = dict(Details).get("xp")
+    MSG = dict(Details).get("message_count")
+    Embed = discord.Embed(title=f"{user} user info",description=f"Profile Info:\nUser Nick: **{user.nick}**\nUser Join Date: **{user.joined_at}**\nUser Nitro Since: **{user.premium_since}**\nUser MEE6 Stats:\n Level: **{LVL}**\n Message Count: **{MSG}**\nXP: **{XP}**\nUser profile picture: {user.avatar_url}\n",color=discord.Color.gold()).set_image(url=user.avatar_url)
     await ctx.send(embed=Embed)
 
 @bot.command(aliases=['say'])
 async def repeat(ctx, msg:str):
     Fmsg = str(ctx.message.content).replace(f"{Pre} repeat","").replace(f"{Pre} say","").lower()
+    print(f"Now saying {Fmsg} by {ctx.author}")
     #FunnyWords = ["stupid","gay","dumb"]
     if "stupid" in Fmsg:
         await ctx.send("We know")
     else:
         await ctx.send(Fmsg)
         await ctx.message.delete()
+
+
 
 #VC Cmds
 @bot.command(aliases=['join'])
@@ -285,11 +300,15 @@ async def play(ctx, *url:str):
     voice = get(bot.voice_clients, guild=ctx.guild)
                 
     song_there = os.path.isfile("Song.mp3")
+    SongList = []
+    Int = 0
     
     try:
-        if song_there:
-            print("Now removing song file")
-            os.remove("Song.mp3")
+        for i in os.listdir("./"):
+            if i.endswith(".mp3"):
+                os.remove(i)
+                SongList.clear()
+                Int=0
     except PermissionError:
         print("Song being used")
         await ctx.send("Music is currently playing. Please wait for it to finish")
@@ -321,22 +340,27 @@ async def play(ctx, *url:str):
             await ctx.send(f"Give me an actuall Youtube or Spotify url please and not '**{JoinedURL}**'. You can also specify a song name(EX: ``Linda p BFG Division``) <@{ctx.author.id}>")
         
     
-
+    print(f"Song download took {time.time() - Timer}")
+    
     for i in os.listdir("./"):
         if i.endswith(".mp3"):
-            SongName = i
-            print(f"File {SongName} found, now renaming")
-            os.rename(SongName, "Song.mp3")
+            SongList.append(f"Song{Int}.mp3")
+            print(f"File {i} found, now renaming")
+            os.rename(i, f"Song{Int}.mp3")
+            Int = Int+1
     
+    async def p_song(itter):
+        voice.play(discord.FFmpegPCMAudio(itter), after=lambda e: print("Now playing next song"))
+        voice.source = discord.PCMVolumeTransformer(voice.source)
+        voice.source.volume = 0.10
+        Emoji = discord.utils.get(bot.emojis,name="xar")
+        Embed = discord.Embed(title="Now Playing", description=f"{str(Emoji)} **{JoinedURL}** {str(Emoji)}",color=discord.Color.green())
+        await ctx.send(embed=Embed)
 
-    voice.play(discord.FFmpegPCMAudio("Song.mp3"), after=lambda e: print("Done playing"))
-    voice.source = discord.PCMVolumeTransformer(voice.source)
-    voice.source.volume = 0.07
-
-    Emoji = discord.utils.get(bot.emojis,name="xar")
-    Embed = discord.Embed(title="Now Playing", description=f"{str(Emoji)} **{JoinedURL}** {str(Emoji)}",color=discord.Color.green())
-    print(f"Song download took {time.time() - Timer}")
-    await ctx.send(embed=Embed)
+    for i in SongList:
+        await p_song(i)
+        print(f"Song length is {MP3(i).info.length}")
+        await asyncio.sleep(MP3(i).info.length)      
 
 @bot.command()
 async def pause(ctx):
