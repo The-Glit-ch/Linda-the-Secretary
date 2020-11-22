@@ -19,13 +19,9 @@ Pre = "Linda"
 bot.remove_command('help')
 
 #Tokens
-TOKEN = "Nzc3MzgyODY4NjQ0MTM0OTEy.X7CoNg.-W0X-ChUvf1xoC2SNLxYZPh4Lyk"
+TOKEN = "Ha no"
 RedditAPI = {
-    "client_id":"ngA9KAClS8VuIw",
-    "client_secret":"e9w_d3QLPXyxYOqlO3mqsnlyGtZ5uw",
-    "password":"amapola13", 
-    "user_agent":"Linda",
-    "username":"Glith_ches",
+    "Ha no",
 }
 
 
