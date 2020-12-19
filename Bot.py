@@ -4,17 +4,20 @@
 #import youtube_dl
 #import shutil
 #import praw
+from typing import ContextManager
 import discord, asyncio, os, random, youtube_dl, shutil, praw, time
+from discord.colour import Color
 from mee6_py_api import API
-from os import system
+from os import pathsep, system
 from mutagen.mp3 import MP3
-from discord import Spotify, Member
+from discord import Spotify, Member, Intents
 from discord.utils import get
 from discord.ext import commands
 from discord.ext.commands import has_permissions
 from discord.ext.commands.errors import MissingPermissions, MissingRequiredArgument
 
-bot = commands.Bot(command_prefix='Linda ')
+intents = discord.Intents.all()
+bot = commands.Bot(command_prefix='Linda ',intents=intents)
 Pre = "Linda"
 bot.remove_command('help')
 
@@ -24,14 +27,15 @@ RedditAPI = {
     "Ha no",
 }
 
-
 #VARS
 global voice
 voice = None
 
 Whitelist = [557339295325880320,762844152429412402]
+Blacklist = [729169434278625330,764133892923588628]
 ActList = ["competing","custom","listening","mro","playing","streaming","unknown","watching"]
 #VARS
+
 
 @bot.event
 async def on_ready():
@@ -39,7 +43,27 @@ async def on_ready():
     print (f"Bot Name: {str(bot.user.name)}")
     print (f"Bot ID: {bot.user.id}")
     print ("------------------------------------")
-    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening ,name="something"))
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening ,name="something, idk"))
+
+@bot.event
+async def on_member_join(member):
+    TS = bot.get_channel(762761198277230592)
+    role = get(member.guild.roles, name="Unverified member")
+    await member.add_roles(role)
+    await TS.send(f"Welcome {member} to the server")
+
+@bot.event
+async def on_member_remove(member):
+    TS = bot.get_channel(762761198277230592)
+    await TS.send(f"Well that fucker {member} left")
+
+
+@bot.event
+async def on_message(ctx):
+    if ctx.author.id in Blacklist:
+        pass
+    else:
+        await bot.process_commands(ctx)
 
 #
 #Event Spacer^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -111,6 +135,20 @@ async def update_status(ctx, Act, Text):
         else:
             await ctx.send(f"Sorry couldnt find any activity called '**{TLower}**'. Here are the available activities ``{str(ActList)}``")
 
+@bot.command()
+async def blacklist(ctx):
+    List = []
+    if ctx.author.id in Whitelist:
+        await ctx.send("Current blacklist")
+        for i in Blacklist:
+            List.append(f"<@{i}>")
+            print(List)
+
+        FList = str(List).replace("[","").replace("]","").replace("'","").replace(",","\n")
+        Embed = discord.Embed(title="All Blacklisted users",description=FList,color=discord.Color.red())
+        await ctx.send(embed=Embed)
+    else:
+        await ctx.send("Generic no allowed access message here")
 #
 #Dev only Spacer^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 #Dev only Spacer
@@ -120,15 +158,15 @@ async def update_status(ctx, Act, Text):
 
 @bot.command(aliases=['Ban'])
 @has_permissions(ban_members=True)
-async def ban(ctx, user:discord.Member, *reason:str):
+async def ban(ctx, user:discord.Member):
     await ctx.send(f"Now banning {user}, bye bye love ;3")
-    await user.ban(reason=' '.join(reason))
+    await user.ban(reason="Banned by Linda")
 
 @bot.command(aliases=['Kick'])
 @has_permissions(kick_members=True)  
-async def kick(ctx, user:discord.Member, *reason:str):
+async def kick(ctx, user:discord.Member):
     await ctx.send(f"{user} is now being kicked, bye bye love ;3")
-    await user.kick(reason=' '.join(reason))
+    await user.kick(reason="Kicked by Linda")
 
 #
 #Admin only Spacer^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -136,6 +174,14 @@ async def kick(ctx, user:discord.Member, *reason:str):
 #Admin only Spacer
 #Admin only Spacer^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 #
+
+# @bot.command(pass_context=True)
+# async def aa(ctx):
+#     if ctx.author.id in Whitelist:
+#         user = ctx.message.author 
+#         role = 'Admin' #change the role here
+#         await ctx.send("EE")
+#         await user.add_roles(discord.utils.get(user.guild.roles, name=role)) 
 
 @bot.command()
 async def dm(ctx, user:discord.User, *arg):
@@ -192,54 +238,64 @@ async def kill(ctx,user:discord.Member):
 
 @bot.command(aliases=['h','Help'])
 async def help(ctx):
-    Embed = discord.Embed(title="List of commands", description="""
+    DevCMDS = discord.Embed(title="``Dev`` Commands List", description="""
     **Dev Commands:**
 
-        ``Linda byebye`` Shuts down the bot **(Aliases=``goodbye``,``cya``,``cya_later``,``<a:peaceout:491498410604625921>``)**\n
-        ``Linda spotify_link`` Under development **(Aliases=None)**\n
-        ``Linda update_status <activity> <message>`` Updates Linda's activity **(Aliases=None)**\n
-        
-    **Admin/Mod Commands:**
-
-        ``Linda kick <user> <reason>`` Kicks user **(Aliases=``Kick``)**\n
-        ``Linda ban <user> <reason>`` Bans user **(Aliases=``Ban``)**\n
-
+        ``Linda byebye``Shuts down the bot**(Aliases=``goodbye``,``cya``,``cya_later``,``<a:peaceout:491498410604625921>``)**\n
+        ``Linda spotify_link``Under development**(Aliases=``None``)**\n
+        ``Linda update_status <activity> <message>``Updates Linda's activity**(Aliases=``None``)**\n
+        ``Linda blacklist`` Shows all users blacklisted **(Aliases=``None``)**\n""",color=discord.Color.red())
+    
+    AdminCMDS = discord.Embed(title="``Admin`` Commands List",description="""
+    **Admin Commands:**
+    
+        ``Linda ban`` Bans the specified user **(Aliases=``Ban``)**\n
+        ``Linda kick`` Kicks the specified user **(Aliases=``Kick``)**\n""",color=discord.Color.red())
+    
+    CommandCMDS = discord.Embed(title="``Commands`` List",description="""
     **Commands:**
-
-        ``Linda dm <user> <msg>`` Dms the specified user with the specified message **(Aliases=None)**\n
-        ``Linda clear_history`` Clears your dm history with linda **(Aliases=None)**\n
-        ``Linda browse_reddit <subreddit>`` Browse reddit(NSFW Posts will be messaged to you) **(Aliases=``reddit``,``br``)**\n
-        ``Linda kill <user>`` Either the specified user dies, you die, or you both die ¯\_(ツ)_/¯ **(Aliases=None)**\n
-        ``Linda help`` Do I really have to explain this **(Aliases=``h``,``Help``)**\n
-        ``Linda profile <user>`` Get info on a user's profile **(Aliases=``Info``)**\n
-        ``Linda repeat <msg>`` Linda says what you said(Thats what she said) **(Aliases=``say``)**\n
-
-    **VC Commands:**
-
-    *(VC Code is a mess curently, dont expect it to be perfect --The_Glit-ch)*
-        ``Linda join_vc`` Linda joins the VC channel your in **(Aliases=``join``)**\n
-        ``Linda disconnect`` Linda leaves the current channel she is in **(Aliases=``disc``,``leave``)**\n
-        ``Linda play <url/song name>`` Linda plays any song/audio you want **(Aliases=``p``,``vibe``,``p``)**\n
-        ``Linda pause`` Linda pauses the current playing song/audio **(Aliases=``None``)**\n
-        ``Linda resume`` Linda resumes the song/audio **(Aliases=``res``)**\n
-        ``Linda stop`` Linda stop the song/audio **(Aliases=``st``)**\n
     
-    **Other/Debug**
+        ``Linda dm <user> <message>`` Direct Messages the specified person with your message **(Aliases=``None``)**\n
+        ``Linda clear_history`` Clears your direct message history with Linda **(Aliases=``None``)**\n
+        ``Linda browse_reddit <subreddit>`` Browse Reddit **(Aliases=``reddit``,``br``)**\n
+        ``Linda kill <user>`` Kills the specified user...or you ;) **(Aliases=``None``)**\n
+        ``Linda help`` Shows this :O **(Aliases=``h``,``Help``)**\n
+        ``Linda profile <user>`` Get user info on the specified user **(Aliases=``info``)**\n
+        ``Linda repeat <message>`` Repeats what you say **(Aliases=``say``)**\n
+        ``Linda minecraft "<top_text>" "<bottom_text>"`` Get a minecraft achivement type thing **(Aliases==``mc``)**\n""",color=discord.Color.red())
     
-        ``Linda latency`` Get the current latency **(Aliases=``lat``)**\n""",color=discord.Color.red())
-    await ctx.send("Now sending you a dm")
-    await ctx.author.send(embed=Embed)
+    VCCMDS = discord.Embed(title="``Voice Channel`` Commands List",description="""
+    **Voice Channel Commands:**
+    --Note VC commands are currently a mess, dont expect them to be perfect
+    
+        ``Linda join_vc`` Joins the current VC your in **(Aliases=``join``)**\n
+        ``Linda disconnect`` Disconnects from the VC **(Aliases=``disc``,``leave``)**\n
+        ``Linda play <audio_url/audio_name>`` Plays the Audio in VC **(Aliases=``p``,``vibe``,``pl``)**\n
+        ``Linda pause`` Pauses the current playing audio **(Aliases=``None``)**\n
+        ``Linda resume`` Resumes playing the current audio **(Aliases=``res``)**\n
+        ``Linda stop`` Stops playing the current audio **(Aliases=``st``)**\n""",color=discord.Color.red())
+    
+
+    await ctx.send("Now sending you some dms")
+    await ctx.author.send(embed=DevCMDS)
+    await ctx.author.send(embed=AdminCMDS)
+    await ctx.author.send(embed=CommandCMDS)
+    await ctx.author.send(embed=VCCMDS)
 
 @bot.command(aliases=['info'])
 async def profile(ctx,user:discord.Member):
-    print(f"Getting user info from {user}, requested by {ctx.author}")
-    mee6API = API(ctx.message.guild.id)
-    Details = await mee6API.levels.get_user_details(user.mention.replace("<@","").replace(">",""))
-    LVL = dict(Details).get("level")
-    XP = dict(Details).get("xp")
-    MSG = dict(Details).get("message_count")
-    Embed = discord.Embed(title=f"{user} user info",description=f"Profile Info:\nUser Nick: **{user.nick}**\nUser Join Date: **{user.joined_at}**\nUser Nitro Since: **{user.premium_since}**\nUser MEE6 Stats:\n Level: **{LVL}**\n Message Count: **{MSG}**\nXP: **{XP}**\nUser profile picture: {user.avatar_url}\n",color=discord.Color.gold()).set_image(url=user.avatar_url)
-    await ctx.send(embed=Embed)
+    try:
+        print(f"Getting user info from {user}, requested by {ctx.author}")
+        mee6API = API(ctx.message.guild.id)
+        Details = await mee6API.levels.get_user_details(user.mention.replace("<@","").replace(">","").replace("!","").replace("<@","").replace(">",""))
+        LVL = dict(Details).get("level")
+        XP = dict(Details).get("xp")
+        MSG = dict(Details).get("message_count")
+        Embed = discord.Embed(title=f"{user} user info",description=f"Profile Info:\nUser Nick: **{user.nick}**\nUser Join Date: **{user.joined_at}**\nUser Nitro Since: **{user.premium_since}**\nUser MEE6 Stats:\n Level: **{LVL}**\n Message Count: **{MSG}**\nXP: **{XP}**\nUser profile picture: {user.avatar_url}\n",color=discord.Color.gold()).set_image(url=user.avatar_url)
+        await ctx.send(embed=Embed)
+    except:
+        Embed = discord.Embed(title=f"{user} user info",description=f"Profile Info:\nUser Nick: **{user.nick}**\nUser Join Date: **{user.joined_at}**\nUser Nitro Since: **{user.premium_since}**\nUser profile picture: {user.avatar_url}\n",color=discord.Color.gold()).set_image(url=user.avatar_url)
+        await ctx.send(embed=Embed)
 
 @bot.command(aliases=['say'])
 async def repeat(ctx, msg:str):
@@ -252,7 +308,12 @@ async def repeat(ctx, msg:str):
         await ctx.send(Fmsg)
         await ctx.message.delete()
 
-
+@bot.command(aliases=['mc'])
+async def minecraft(ctx, ytext:str, wtext:str):
+    YTemp = ytext.replace(" ","+")
+    WTemp = wtext.replace(" ","+")
+    print(f"New request from {ctx.author}, https://mcgen.herokuapp.com/a.php?i=1&h={YTemp}&t={WTemp}")
+    await ctx.send(f"https://mcgen.herokuapp.com/a.php?i=1&h={YTemp}&t={WTemp}")
 
 #VC Cmds
 @bot.command(aliases=['join'])
@@ -292,6 +353,7 @@ async def disconnect(ctx):
 async def play(ctx, *url:str):
     Timer = time.time()
     await Tired(ctx=ctx)
+    SongListData = []
     JoinedURL = ' '.join(url)
     voice = get(bot.voice_clients, guild=ctx.guild)
                 
@@ -338,8 +400,11 @@ async def play(ctx, *url:str):
     
     print(f"Song download took {time.time() - Timer}")
     
+    
+
     for i in os.listdir("./"):
         if i.endswith(".mp3"):
+            SongListData.append(i)
             SongList.append(f"Song{Int}.mp3")
             print(f"File {i} found, now renaming")
             os.rename(i, f"Song{Int}.mp3")
@@ -349,6 +414,7 @@ async def play(ctx, *url:str):
         voice.play(discord.FFmpegPCMAudio(itter), after=lambda e: print("Now playing next song"))
         voice.source = discord.PCMVolumeTransformer(voice.source)
         voice.source.volume = 0.10
+        #T = str(SongListData).replace(".mp3","").replace("-"," ").replace(",","\n").replace("[","").replace("]","")
         Emoji = discord.utils.get(bot.emojis,name="xar")
         Embed = discord.Embed(title="Now Playing", description=f"{str(Emoji)} **{JoinedURL}** {str(Emoji)}",color=discord.Color.green())
         await ctx.send(embed=Embed)
@@ -357,6 +423,8 @@ async def play(ctx, *url:str):
         await p_song(i)
         print(f"Song length is {MP3(i).info.length}")
         await asyncio.sleep(MP3(i).info.length)      
+
+    SongListData.clear()
 
 @bot.command()
 async def pause(ctx):
