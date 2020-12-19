@@ -55,7 +55,7 @@ async def on_member_join(member):
 @bot.event
 async def on_member_remove(member):
     TS = bot.get_channel(762761198277230592)
-    await TS.send(f"Well that fucker {member} left")
+    await TS.send(f"Well {member} left")
 
 
 @bot.event
