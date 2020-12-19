@@ -9,4 +9,4 @@ The whole bot is written in [python](https://www.python.org/) with help with of 
 # Update: Repo is now Public
 ## Decided to have this repository open now since I have nothing else to add to the bot
 
-## Update: Discord just screamed at me because i forgot to remove a token(I changed it). Anyways thanks discord
+> Update: Discord just screamed at me because I forgot to remove a token(I changed it). Anyways thanks discord
