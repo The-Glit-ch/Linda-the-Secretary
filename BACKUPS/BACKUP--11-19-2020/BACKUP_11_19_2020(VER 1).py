@@ -188,7 +188,7 @@ async def browse_reddit(ctx, sub):
 @bot.command()
 async def kill(ctx,user:discord.Member):
     Author = ctx.author
-    Death = [f"{user} died to fall damage",f"{user} dies from seeing {Author}'s face",f"{user} had enough of this world and just dies",f"{user} fucked a monkey and died of aids",f"{user} had a stroke from reading {Author}'s dm",f"{user} died from jacking off too {Author} 50 times in a row",f"{user}'s mom caught them watching gay no-no video",f"{Author} kamakazied {user}",f"{user} got killed by {Author}'s thicc thighs",f""]
+    Death = ["Example Death: {Author} died after {user} pushed them off a cliff"]
     try:
         await ctx.send(Death[random.randint(0,len(Death))])
     except:
